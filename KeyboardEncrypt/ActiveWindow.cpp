@@ -3,6 +3,7 @@
 extern "C"{
 #endif
 
+#include <ntifs.h>
 #include <ntddk.h>
 
 #include "ActiveWindow.h"
@@ -10,15 +11,18 @@ extern "C"{
 #include "Common.h"
 #include "Win10_1703_x64.h"
 
-	extern ULONG g_RelatedProcessId;
-
-
 	typedef ULONG_PTR(__fastcall *pfNtUserGetForegroundWindow)();
 
 	typedef HANDLE(__fastcall *pfNtUserQueryWindow)(
 		IN HANDLE hwnd,
 		IN ULONG WindowInfo);
 
+
+	extern ULONG g_RelatedProcessId;
+
+
+	pfNtUserGetForegroundWindow NtUserGetForegroundWindow = NULL;
+	pfNtUserQueryWindow NtUserQueryWindow = NULL;
 
 	ULONGLONG GetGuiThread(PEPROCESS eprocess)
 	{
@@ -45,20 +49,64 @@ extern "C"{
 
 	BOOLEAN IsRelatedWindowActive()
 	{
-		PVOID GetForegroundWindowProcAddr = NULL;
-		GetForegroundWindowProcAddr = GetShadowSSDTProcAddr(0x3f);
+		if (g_RelatedProcessId == 0)
+		{
+			return FALSE;
+		}
+
+		if (!NtUserGetForegroundWindow)
+		{
+			NtUserGetForegroundWindow = (pfNtUserGetForegroundWindow)GetShadowSSDTProcAddr(0x3f);
+		}
+		if (!NtUserQueryWindow)
+		{
+			NtUserQueryWindow = (pfNtUserQueryWindow)GetShadowSSDTProcAddr(0x13);
+		}
 
 		PWCHAR relateName = NULL;
-		PWCHAR processName = NULL;
 
 		GetProcessNameByPid(g_RelatedProcessId, &relateName);
 
-		if (g_RelatedProcessId && wcscmp(relateName, L"TestDesk.exe") == 0)
+		// 这里是写死了，以后可以通过应用层传过来信息
+		if (wcscmp(relateName, L"TestDesk.exe") == 0)
 		{
-			
-			return TRUE;
+			ExFreePool(relateName);
+			PEPROCESS relProcEProcess = NULL;
+			NTSTATUS status = PsLookupProcessByProcessId((HANDLE)g_RelatedProcessId, &relProcEProcess);
+			if (!NT_SUCCESS(status))
+			{
+				return FALSE;
+			}
 
+			PRKAPC_STATE apcState;
+			apcState = (PRKAPC_STATE)ExAllocatePoolWithTag(NonPagedPool, sizeof(KAPC_STATE), KBDTAG);
+
+			KeStackAttachProcess(relProcEProcess, apcState);
+
+			PETHREAD currentEThread = KeGetCurrentThread();
+
+			((PMY_KTHREAD)currentEThread)->Win32Thread = GetGuiThread(relProcEProcess);
+
+			ULONG_PTR hActiveWindow = NtUserGetForegroundWindow();
+
+			ULONG activeProcId = (ULONG)NtUserQueryWindow((HANDLE)hActiveWindow, 0);
+
+			((PMY_KTHREAD)currentEThread)->Win32Thread = 0;
+
+			KeUnstackDetachProcess(apcState);
+
+			ExFreePool(apcState);
+
+			if (activeProcId == g_RelatedProcessId)
+			{
+				return TRUE;
+			}
+			else
+			{
+				return FALSE;
+			}
 		}
+		ExFreePool(relateName);
 		return FALSE;
 	}
 
