@@ -10,6 +10,7 @@ extern "C"{
 #include "Common.h"
 
 	extern LIST_ENTRY g_KbdInfoList;
+	extern BOOLEAN g_IsActive;
 
 	PDRIVER_DISPATCH g_OriKbdclassReadDispatch = NULL;
 	PIO_COMPLETION_ROUTINE g_OriKbdclassCompleteRoutineOfReadDispatch = NULL;
@@ -70,7 +71,7 @@ extern "C"{
 	{
 		g_IrpPendingNum--;
 
-		if (1/*IsRelatedWindowActive()*/)
+		if (g_IsActive)
 		{
 			MarkAndModifyKeyboardInfo(Irp);
 		}
@@ -271,7 +272,7 @@ extern "C"{
 
 
 				// ÐÞ¸Ä
-				// kbdData->MakeCode = 0x31; // 'n'
+				kbdData->MakeCode = 0x31; // 'n'
 			}
 
 		}

@@ -45,15 +45,15 @@ extern "C"{
 
 		PSYSTEM_DESCRIPTOR_TABLE shadowSSDTBase = (PSYSTEM_DESCRIPTOR_TABLE)GetShadowSSDTBase();
 
-		status = PsLookupProcessByProcessId((HANDLE)GetPidByProcName((PWCHAR)L"csrss.exe"), &eprocess);
-
+		status = PsLookupProcessByProcessId((HANDLE)GetPidByProcName((PWCHAR)L"explorer.exe"), &eprocess);
+		
 		if (!NT_SUCCESS(status))
 		{
 			return NULL;
 		}
-
+		
 		apcState = (PRKAPC_STATE)ExAllocatePool(NonPagedPool, sizeof(KAPC_STATE));
-
+		
 		KeStackAttachProcess((PRKPROCESS)eprocess, apcState);
 
 #ifdef _X86_
@@ -97,7 +97,7 @@ extern "C"{
 #endif
 		KeUnstackDetachProcess(apcState);
 		ExFreePool(apcState);
-
+		
 		ObDereferenceObject(eprocess);
 		return procAddr;
 	}

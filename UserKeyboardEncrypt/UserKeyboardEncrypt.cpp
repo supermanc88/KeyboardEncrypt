@@ -5,6 +5,11 @@
 
 #include <Windows.h>
 
+#include <winioctl.h>
+
+
+#define CTL_RELATION_PROCESS_INFO		CTL_CODE(FILE_DEVICE_UNKNOWN, 0x801, METHOD_BUFFERED, FILE_ANY_ACCESS)
+
 
 int _tmain(int argc, _TCHAR* argv[])
 {
@@ -16,6 +21,22 @@ int _tmain(int argc, _TCHAR* argv[])
 		OPEN_EXISTING,
 		FILE_ATTRIBUTE_NORMAL,
 		NULL);
+
+	DWORD procId = 0;
+
+	scanf("%d", &procId);
+
+
+	DWORD byteRet = 0;
+	DeviceIoControl(handle,
+		CTL_RELATION_PROCESS_INFO,
+		&procId,
+		4,
+		NULL,
+		NULL,
+		&byteRet,
+		NULL);
+
 
 
 	while (true)

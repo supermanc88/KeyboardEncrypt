@@ -1,0 +1,7 @@
+内部仅针对notepad.exe做输入加密
+
+UserKeyboardEncrypt程序输入notepad的进程id
+
+将所有对notepad窗口的键盘指令全部改为 n
+
+通过对UserKeyboardEncrypt回车可看到原始输入的指令

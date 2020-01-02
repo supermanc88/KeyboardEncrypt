@@ -6,6 +6,7 @@ extern "C"{
 
 #include "KeyboardEncrypt.h"
 #include "FuckKbdclass.h"
+#include "ActiveWindow.h"
 #include "Common.h"
 
 
@@ -72,6 +73,17 @@ extern "C"{
 
 
 		status = InstallKbdclassIrpHook();
+
+		HANDLE threadHandle;
+
+		PsCreateSystemThread(&threadHandle,
+			0,
+			NULL,
+			NULL,
+			NULL,
+			ActiveWindowThread,
+			NULL);
+
 
 		return status;
 	}

@@ -20,6 +20,8 @@ extern "C"{
 
 	extern ULONG g_RelatedProcessId;
 
+	BOOLEAN	g_IsActive = FALSE;
+
 
 	pfNtUserGetForegroundWindow NtUserGetForegroundWindow = NULL;
 	pfNtUserQueryWindow NtUserQueryWindow = NULL;
@@ -47,6 +49,8 @@ extern "C"{
 		return 0;
 	}
 
+
+	// 由于此函数在hook的kbdclass read complete中不可调用，改到开线程调用
 	BOOLEAN IsRelatedWindowActive()
 	{
 		if (g_RelatedProcessId == 0)
@@ -68,7 +72,7 @@ extern "C"{
 		GetProcessNameByPid(g_RelatedProcessId, &relateName);
 
 		// 这里是写死了，以后可以通过应用层传过来信息
-		if (wcscmp(relateName, L"TestDesk.exe") == 0)
+		if (wcscmp(relateName, L"notepad.exe") == 0)
 		{
 			ExFreePool(relateName);
 			PEPROCESS relProcEProcess = NULL;
@@ -108,6 +112,27 @@ extern "C"{
 		}
 		ExFreePool(relateName);
 		return FALSE;
+	}
+
+
+
+	VOID ActiveWindowThread( PVOID StartContext )
+	{
+		while (TRUE)
+		{
+			// 这用的时候最好有个自旋锁
+			g_IsActive = IsRelatedWindowActive();
+			LARGE_INTEGER delayTime = { 0 };
+
+			delayTime = RtlConvertLongToLargeInteger(100 * -10000);
+
+			PKTHREAD currentThread = KeGetCurrentThread();
+
+			KeDelayExecutionThread(KernelMode, FALSE, &delayTime);
+
+		}
+
+		PsTerminateSystemThread(STATUS_SUCCESS);
 	}
 
 
