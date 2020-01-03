@@ -41,15 +41,20 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	while (true)
 	{
-		USHORT code;
+		USHORT code = 0;
 		DWORD byteRead = 0;
-		ReadFile(handle,
+		if(ReadFile(handle,
 			&code,
 			2,
 			&byteRead,
-			NULL);
-
-		printf("%c\n", (UCHAR)code^0xFFFF);
+			NULL))
+		{
+			printf("%c\n", (UCHAR)code ^ 0xFFFF);
+		}
+		else
+		{
+			printf("用户没有输入了\n");
+		}
 		getchar();
 	}
 

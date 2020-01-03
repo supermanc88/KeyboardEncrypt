@@ -19,7 +19,7 @@ extern "C"{
 
 	LIST_ENTRY g_KbdInfoList;
 	ULONG g_RelatedProcessId = 0;
-
+	KEVENT g_ThreadTerminalEvent;
 
 	NTSTATUS DriverEntry(PDRIVER_OBJECT DriverObject, PUNICODE_STRING RegistryPath)
 	{
@@ -75,6 +75,8 @@ extern "C"{
 		status = InstallKbdclassIrpHook();
 
 		HANDLE threadHandle;
+
+		KeInitializeEvent(&g_ThreadTerminalEvent, NotificationEvent, FALSE);
 
 		PsCreateSystemThread(&threadHandle,
 			0,
@@ -200,6 +202,9 @@ extern "C"{
 		{
 			KeDelayExecutionThread(KernelMode, FALSE, &delayTime);
 		}
+
+		// 关闭查找激活窗口线程
+		KeSetEvent(&g_ThreadTerminalEvent, IO_NO_INCREMENT, FALSE);
 
 		KdPrint(("KeyboardEncrypt 驱动卸载\n"));
 	}

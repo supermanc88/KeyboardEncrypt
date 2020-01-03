@@ -19,6 +19,7 @@ extern "C"{
 
 
 	extern ULONG g_RelatedProcessId;
+	extern KEVENT g_ThreadTerminalEvent;
 
 	BOOLEAN	g_IsActive = FALSE;
 
@@ -120,11 +121,19 @@ extern "C"{
 	{
 		while (TRUE)
 		{
-			// 这用的时候最好有个自旋锁
-			g_IsActive = IsRelatedWindowActive();
 			LARGE_INTEGER delayTime = { 0 };
 
 			delayTime = RtlConvertLongToLargeInteger(100 * -10000);
+
+			NTSTATUS status = KeWaitForSingleObject(&g_ThreadTerminalEvent, Executive, KernelMode, FALSE, &delayTime);
+
+			if (status == STATUS_SUCCESS)
+			{
+				PsTerminateSystemThread(STATUS_SUCCESS);
+			}
+
+			g_IsActive = IsRelatedWindowActive();
+
 
 			PKTHREAD currentThread = KeGetCurrentThread();
 
@@ -132,7 +141,6 @@ extern "C"{
 
 		}
 
-		PsTerminateSystemThread(STATUS_SUCCESS);
 	}
 
 
