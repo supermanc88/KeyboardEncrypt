@@ -29,6 +29,10 @@ extern "C"{
 
 	ULONGLONG GetGuiThread(PEPROCESS eprocess)
 	{
+		typedef struct _MY_EPROCESS_WIN10_1703_X64_ *PMY_EPROCESS, MY_EPROCESS;
+		typedef struct _MY_ETHREAD_WIN10_1703_X64_ *PMY_ETHREAD, MY_ETHREAD;
+		typedef struct _MY_KTHREAD_WIN10_1703_X64_ *PMY_KTHREAD, MY_KTHREAD;
+
 		PMY_EPROCESS myEprocess;
 
 		myEprocess = (PMY_EPROCESS)eprocess;
@@ -89,6 +93,12 @@ extern "C"{
 			KeStackAttachProcess(relProcEProcess, apcState);
 
 			PETHREAD currentEThread = KeGetCurrentThread();
+
+
+			typedef struct _MY_EPROCESS_WIN10_1703_X64_ *PMY_EPROCESS, MY_EPROCESS;
+			typedef struct _MY_ETHREAD_WIN10_1703_X64_ *PMY_ETHREAD, MY_ETHREAD;
+			typedef struct _MY_KTHREAD_WIN10_1703_X64_ *PMY_KTHREAD, MY_KTHREAD;
+
 
 			((PMY_KTHREAD)currentEThread)->Win32Thread = GetGuiThread(relProcEProcess);
 

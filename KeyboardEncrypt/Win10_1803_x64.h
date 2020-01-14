@@ -1,9 +1,9 @@
 #pragma once
 #include <ntdef.h>
 
-struct _MY_EPROCESS_WIN10_1703_X64_
+struct _MY_EPROCESS_WIN10_1803_X64_
 {
-	UCHAR PcbAndOthers[0x488];// +0x000 Pcb              : _KPROCESS
+	UCHAR PcbAndOthers[0x488]; // +0x000 Pcb              : _KPROCESS
 	// 	+ 0x2d8 ProcessLock : _EX_PUSH_LOCK
 	// 	+ 0x2e0 UniqueProcessId : Ptr64 Void
 	// 	+ 0x2e8 ActiveProcessLinks : _LIST_ENTRY
@@ -19,30 +19,30 @@ struct _MY_EPROCESS_WIN10_1703_X64_
 	// 	+ 0x300 CrossSessionCreate : Pos 7, 1 Bit
 	// 	+ 0x300 NeedsHandleRundown : Pos 8, 1 Bit
 	// 	+ 0x300 RefTraceEnabled : Pos 9, 1 Bit
-	// 	+ 0x300 DisableDynamicCode : Pos 10, 1 Bit
+	// 	+ 0x300 PicoCreated : Pos 10, 1 Bit
 	// 	+ 0x300 EmptyJobEvaluated : Pos 11, 1 Bit
 	// 	+ 0x300 DefaultPagePriority : Pos 12, 3 Bits
 	// 	+ 0x300 PrimaryTokenFrozen : Pos 15, 1 Bit
 	// 	+ 0x300 ProcessVerifierTarget : Pos 16, 1 Bit
-	// 	+ 0x300 StackRandomizationDisabled : Pos 17, 1 Bit
+	// 	+ 0x300 RestrictSetThreadContext : Pos 17, 1 Bit
 	// 	+ 0x300 AffinityPermanent : Pos 18, 1 Bit
 	// 	+ 0x300 AffinityUpdateEnable : Pos 19, 1 Bit
 	// 	+ 0x300 PropagateNode : Pos 20, 1 Bit
 	// 	+ 0x300 ExplicitAffinity : Pos 21, 1 Bit
 	// 	+ 0x300 ProcessExecutionState : Pos 22, 2 Bits
-	// 	+ 0x300 DisallowStrippedImages : Pos 24, 1 Bit
-	// 	+ 0x300 HighEntropyASLREnabled : Pos 25, 1 Bit
-	// 	+ 0x300 ExtensionPointDisable : Pos 26, 1 Bit
-	// 	+ 0x300 ForceRelocateImages : Pos 27, 1 Bit
+	// 	+ 0x300 EnableReadVmLogging : Pos 24, 1 Bit
+	// 	+ 0x300 EnableWriteVmLogging : Pos 25, 1 Bit
+	// 	+ 0x300 FatalAccessTerminationRequested : Pos 26, 1 Bit
+	// 	+ 0x300 DisableSystemAllowedCpuSet : Pos 27, 1 Bit
 	// 	+ 0x300 ProcessStateChangeRequest : Pos 28, 2 Bits
 	// 	+ 0x300 ProcessStateChangeInProgress : Pos 30, 1 Bit
-	// 	+ 0x300 DisallowWin32kSystemCalls : Pos 31, 1 Bit
+	// 	+ 0x300 InPrivate : Pos 31, 1 Bit
 	// 	+ 0x304 Flags : Uint4B
 	// 	+ 0x304 CreateReported : Pos 0, 1 Bit
 	// 	+ 0x304 NoDebugInherit : Pos 1, 1 Bit
 	// 	+ 0x304 ProcessExiting : Pos 2, 1 Bit
 	// 	+ 0x304 ProcessDelete : Pos 3, 1 Bit
-	// 	+ 0x304 ControlFlowGuardEnabled : Pos 4, 1 Bit
+	// 	+ 0x304 ManageExecutableMemoryWrites : Pos 4, 1 Bit
 	// 	+ 0x304 VmDeleted : Pos 5, 1 Bit
 	// 	+ 0x304 OutswapEnabled : Pos 6, 1 Bit
 	// 	+ 0x304 Outswapped : Pos 7, 1 Bit
@@ -113,7 +113,7 @@ struct _MY_EPROCESS_WIN10_1703_X64_
 	// 	+ 0x468 SeAuditProcessCreationInfo : _SE_AUDIT_PROCESS_CREATION_INFO
 	// 	+ 0x470 JobLinks : _LIST_ENTRY
 	// 	+ 0x480 HighestUserAddress : Ptr64 Void
-	LIST_ENTRY ThreadListHead;// 	+ 0x488 ThreadListHead : _LIST_ENTRY
+	LIST_ENTRY ThreadListHead; // 	+ 0x488 ThreadListHead : _LIST_ENTRY
 	// 	+ 0x498 ActiveThreads : Uint4B
 	// 	+ 0x49c ImagePathHash : Uint4B
 	// 	+ 0x4a0 DefaultHardErrorProcessing : Uint4B
@@ -154,38 +154,28 @@ struct _MY_EPROCESS_WIN10_1703_X64_
 	// 	+ 0x6c8 SignatureLevel : UChar
 	// 	+ 0x6c9 SectionSignatureLevel : UChar
 	// 	+ 0x6ca Protection : _PS_PROTECTION
-	// 	+ 0x6cb HangCount : UChar
+	// 	+ 0x6cb HangCount : Pos 0, 4 Bits
+	// 	+ 0x6cb GhostCount : Pos 4, 4 Bits
 	// 	+ 0x6cc Flags3 : Uint4B
 	// 	+ 0x6cc Minimal : Pos 0, 1 Bit
 	// 	+ 0x6cc ReplacingPageRoot : Pos 1, 1 Bit
-	// 	+ 0x6cc DisableNonSystemFonts : Pos 2, 1 Bit
-	// 	+ 0x6cc AuditNonSystemFontLoading : Pos 3, 1 Bit
-	// 	+ 0x6cc Crashed : Pos 4, 1 Bit
-	// 	+ 0x6cc JobVadsAreTracked : Pos 5, 1 Bit
-	// 	+ 0x6cc VadTrackingDisabled : Pos 6, 1 Bit
-	// 	+ 0x6cc AuxiliaryProcess : Pos 7, 1 Bit
-	// 	+ 0x6cc SubsystemProcess : Pos 8, 1 Bit
-	// 	+ 0x6cc IndirectCpuSets : Pos 9, 1 Bit
-	// 	+ 0x6cc InPrivate : Pos 10, 1 Bit
-	// 	+ 0x6cc ProhibitRemoteImageMap : Pos 11, 1 Bit
-	// 	+ 0x6cc ProhibitLowILImageMap : Pos 12, 1 Bit
-	// 	+ 0x6cc SignatureMitigationOptIn : Pos 13, 1 Bit
-	// 	+ 0x6cc DisableDynamicCodeAllowOptOut : Pos 14, 1 Bit
-	// 	+ 0x6cc EnableFilteredWin32kAPIs : Pos 15, 1 Bit
-	// 	+ 0x6cc AuditFilteredWin32kAPIs : Pos 16, 1 Bit
-	// 	+ 0x6cc PreferSystem32Images : Pos 17, 1 Bit
-	// 	+ 0x6cc RelinquishedCommit : Pos 18, 1 Bit
-	// 	+ 0x6cc AutomaticallyOverrideChildProcessPolicy : Pos 19, 1 Bit
-	// 	+ 0x6cc HighGraphicsPriority : Pos 20, 1 Bit
-	// 	+ 0x6cc CommitFailLogged : Pos 21, 1 Bit
-	// 	+ 0x6cc ReserveFailLogged : Pos 22, 1 Bit
-	// 	+ 0x6cc DisableDynamicCodeAllowRemoteDowngrade : Pos 23, 1 Bit
-	// 	+ 0x6cc LoaderIntegrityContinuityEnabled : Pos 24, 1 Bit
-	// 	+ 0x6cc LoaderIntegrityContinuityAudit : Pos 25, 1 Bit
-	// 	+ 0x6cc ControlFlowGuardExportSuppressionEnabled : Pos 26, 1 Bit
-	// 	+ 0x6cc FatalAccessTerminationRequested : Pos 27, 1 Bit
-	// 	+ 0x6cc DisableSystemAllowedCpuSet : Pos 28, 1 Bit
-	// 	+ 0x6cc ControlFlowGuardStrict : Pos 29, 1 Bit
+	// 	+ 0x6cc Crashed : Pos 2, 1 Bit
+	// 	+ 0x6cc JobVadsAreTracked : Pos 3, 1 Bit
+	// 	+ 0x6cc VadTrackingDisabled : Pos 4, 1 Bit
+	// 	+ 0x6cc AuxiliaryProcess : Pos 5, 1 Bit
+	// 	+ 0x6cc SubsystemProcess : Pos 6, 1 Bit
+	// 	+ 0x6cc IndirectCpuSets : Pos 7, 1 Bit
+	// 	+ 0x6cc RelinquishedCommit : Pos 8, 1 Bit
+	// 	+ 0x6cc HighGraphicsPriority : Pos 9, 1 Bit
+	// 	+ 0x6cc CommitFailLogged : Pos 10, 1 Bit
+	// 	+ 0x6cc ReserveFailLogged : Pos 11, 1 Bit
+	// 	+ 0x6cc SystemProcess : Pos 12, 1 Bit
+	// 	+ 0x6cc HideImageBaseAddresses : Pos 13, 1 Bit
+	// 	+ 0x6cc AddressPolicyFrozen : Pos 14, 1 Bit
+	// 	+ 0x6cc ProcessFirstResume : Pos 15, 1 Bit
+	// 	+ 0x6cc ForegroundExternal : Pos 16, 1 Bit
+	// 	+ 0x6cc ForegroundSystem : Pos 17, 1 Bit
+	// 	+ 0x6cc HighMemoryPriority : Pos 18, 1 Bit
 	// 	+ 0x6d0 DeviceAsid : Int4B
 	// 	+ 0x6d8 SvmData : Ptr64 Void
 	// 	+ 0x6e0 SvmProcessLock : _EX_PUSH_LOCK
@@ -195,48 +185,53 @@ struct _MY_EPROCESS_WIN10_1703_X64_
 	// 	+ 0x708 DiskCounters : Ptr64 _PROCESS_DISK_COUNTERS
 	// 	+ 0x710 PicoContext : Ptr64 Void
 	// 	+ 0x718 TrustletIdentity : Uint8B
-	// 	+ 0x720 HighPriorityFaultsAllowed : Uint4B
-	// 	+ 0x728 EnergyContext : Ptr64 _PO_PROCESS_ENERGY_CONTEXT
-	// 	+ 0x730 VmContext : Ptr64 Void
-	// 	+ 0x738 SequenceNumber : Uint8B
-	// 	+ 0x740 CreateInterruptTime : Uint8B
-	// 	+ 0x748 CreateUnbiasedInterruptTime : Uint8B
-	// 	+ 0x750 TotalUnbiasedFrozenTime : Uint8B
-	// 	+ 0x758 LastAppStateUpdateTime : Uint8B
-	// 	+ 0x760 LastAppStateUptime : Pos 0, 61 Bits
-	// 	+ 0x760 LastAppState : Pos 61, 3 Bits
-	// 	+ 0x768 SharedCommitCharge : Uint8B
-	// 	+ 0x770 SharedCommitLock : _EX_PUSH_LOCK
-	// 	+ 0x778 SharedCommitLinks : _LIST_ENTRY
-	// 	+ 0x788 AllowedCpuSets : Uint8B
-	// 	+ 0x790 DefaultCpuSets : Uint8B
-	// 	+ 0x788 AllowedCpuSetsIndirect : Ptr64 Uint8B
-	// 	+ 0x790 DefaultCpuSetsIndirect : Ptr64 Uint8B
-	// 	+ 0x798 DiskIoAttribution : Ptr64 Void
-	// 	+ 0x7a0 DxgProcess : Ptr64 Void
-	// 	+ 0x7a8 Win32KFilterSet : Uint4B
-	// 	+ 0x7b0 ProcessTimerDelay : _PS_INTERLOCKED_TIMER_DELAY_VALUES
-	// 	+ 0x7b8 KTimerSets : Uint4B
-	// 	+ 0x7bc KTimer2Sets : Uint4B
-	// 	+ 0x7c0 ThreadTimerSets : Uint4B
-	// 	+ 0x7c8 VirtualTimerListLock : Uint8B
-	// 	+ 0x7d0 VirtualTimerListHead : _LIST_ENTRY
-	// 	+ 0x7e0 WakeChannel : _WNF_STATE_NAME
-	// 	+ 0x7e0 WakeInfo : _PS_PROCESS_WAKE_INFORMATION
-	// 	+ 0x810 Flags4 : Uint4B
-	// 	+ 0x810 PicoCreated : Pos 0, 1 Bit
-	// 	+ 0x810 RestrictSetThreadContext : Pos 1, 1 Bit
-	UCHAR Others[0x37C];
+	// 	+ 0x720 EnclaveTable : Ptr64 Void
+	// 	+ 0x728 EnclaveNumber : Uint8B
+	// 	+ 0x730 EnclaveLock : _EX_PUSH_LOCK
+	// 	+ 0x738 HighPriorityFaultsAllowed : Uint4B
+	// 	+ 0x740 EnergyContext : Ptr64 _PO_PROCESS_ENERGY_CONTEXT
+	// 	+ 0x748 VmContext : Ptr64 Void
+	// 	+ 0x750 SequenceNumber : Uint8B
+	// 	+ 0x758 CreateInterruptTime : Uint8B
+	// 	+ 0x760 CreateUnbiasedInterruptTime : Uint8B
+	// 	+ 0x768 TotalUnbiasedFrozenTime : Uint8B
+	// 	+ 0x770 LastAppStateUpdateTime : Uint8B
+	// 	+ 0x778 LastAppStateUptime : Pos 0, 61 Bits
+	// 	+ 0x778 LastAppState : Pos 61, 3 Bits
+	// 	+ 0x780 SharedCommitCharge : Uint8B
+	// 	+ 0x788 SharedCommitLock : _EX_PUSH_LOCK
+	// 	+ 0x790 SharedCommitLinks : _LIST_ENTRY
+	// 	+ 0x7a0 AllowedCpuSets : Uint8B
+	// 	+ 0x7a8 DefaultCpuSets : Uint8B
+	// 	+ 0x7a0 AllowedCpuSetsIndirect : Ptr64 Uint8B
+	// 	+ 0x7a8 DefaultCpuSetsIndirect : Ptr64 Uint8B
+	// 	+ 0x7b0 DiskIoAttribution : Ptr64 Void
+	// 	+ 0x7b8 DxgProcess : Ptr64 Void
+	// 	+ 0x7c0 Win32KFilterSet : Uint4B
+	// 	+ 0x7c8 ProcessTimerDelay : _PS_INTERLOCKED_TIMER_DELAY_VALUES
+	// 	+ 0x7d0 KTimerSets : Uint4B
+	// 	+ 0x7d4 KTimer2Sets : Uint4B
+	// 	+ 0x7d8 ThreadTimerSets : Uint4B
+	// 	+ 0x7e0 VirtualTimerListLock : Uint8B
+	// 	+ 0x7e8 VirtualTimerListHead : _LIST_ENTRY
+	// 	+ 0x7f8 WakeChannel : _WNF_STATE_NAME
+	// 	+ 0x7f8 WakeInfo : _PS_PROCESS_WAKE_INFORMATION
+	// 	+ 0x828 MitigationFlags : Uint4B
+	// 	+ 0x828 MitigationFlagsValues : <unnamed - tag>
+	// 	+0x82c MitigationFlags2 : Uint4B
+	// 	+ 0x82c MitigationFlags2Values : <unnamed - tag>
+	// 	+0x830 PartitionObject : Ptr64 Void
+	// 	+ 0x838 SecurityDomain : Uint8B
+	// 	+ 0x840 CoverageSamplerContext : Ptr64 Void
 
 };
 
-struct _MY_ETHREAD_WIN10_1703_X64_
+struct _MY_ETHREAD_WIN10_1803_X64_
 {
-	UCHAR TcbAndOthers[0x6a0];// +0x000 Tcb              : _KTHREAD
-	// 	+ 0x5e8 CreateTime : _LARGE_INTEGER
-	// 	+ 0x5f0 ExitTime : _LARGE_INTEGER
-	// 	+ 0x5f0 KeyedWaitChain : _LIST_ENTRY
-	// 	+ 0x600 ChargeOnlySession : Ptr64 Void
+	UCHAR TcbAndOthers[0x6a8]; // +0x000 Tcb              : _KTHREAD
+	// 	+ 0x5f0 CreateTime : _LARGE_INTEGER
+	// 	+ 0x5f8 ExitTime : _LARGE_INTEGER
+	// 	+ 0x5f8 KeyedWaitChain : _LIST_ENTRY
 	// 	+ 0x608 PostBlockList : _LIST_ENTRY
 	// 	+ 0x608 ForwardLinkShadow : Ptr64 Void
 	// 	+ 0x610 StartAddress : Ptr64 Void
@@ -253,98 +248,105 @@ struct _MY_ETHREAD_WIN10_1703_X64_
 	// 	+ 0x680 TopLevelIrp : Uint8B
 	// 	+ 0x688 DeviceToVerify : Ptr64 _DEVICE_OBJECT
 	// 	+ 0x690 Win32StartAddress : Ptr64 Void
-	// 	+ 0x698 LegacyPowerObject : Ptr64 Void
-	LIST_ENTRY ThreadListEntry;// 	+ 0x6a0 ThreadListEntry : _LIST_ENTRY
-	// 	+ 0x6b0 RundownProtect : _EX_RUNDOWN_REF
-	// 	+ 0x6b8 ThreadLock : _EX_PUSH_LOCK
-	// 	+ 0x6c0 ReadClusterSize : Uint4B
-	// 	+ 0x6c4 MmLockOrdering : Int4B
-	// 	+ 0x6c8 CrossThreadFlags : Uint4B
-	// 	+ 0x6c8 Terminated : Pos 0, 1 Bit
-	// 	+ 0x6c8 ThreadInserted : Pos 1, 1 Bit
-	// 	+ 0x6c8 HideFromDebugger : Pos 2, 1 Bit
-	// 	+ 0x6c8 ActiveImpersonationInfo : Pos 3, 1 Bit
-	// 	+ 0x6c8 HardErrorsAreDisabled : Pos 4, 1 Bit
-	// 	+ 0x6c8 BreakOnTermination : Pos 5, 1 Bit
-	// 	+ 0x6c8 SkipCreationMsg : Pos 6, 1 Bit
-	// 	+ 0x6c8 SkipTerminationMsg : Pos 7, 1 Bit
-	// 	+ 0x6c8 CopyTokenOnOpen : Pos 8, 1 Bit
-	// 	+ 0x6c8 ThreadIoPriority : Pos 9, 3 Bits
-	// 	+ 0x6c8 ThreadPagePriority : Pos 12, 3 Bits
-	// 	+ 0x6c8 RundownFail : Pos 15, 1 Bit
-	// 	+ 0x6c8 UmsForceQueueTermination : Pos 16, 1 Bit
-	// 	+ 0x6c8 IndirectCpuSets : Pos 17, 1 Bit
-	// 	+ 0x6c8 DisableDynamicCodeOptOut : Pos 18, 1 Bit
-	// 	+ 0x6c8 ExplicitCaseSensitivity : Pos 19, 1 Bit
-	// 	+ 0x6c8 PicoNotifyExit : Pos 20, 1 Bit
-	// 	+ 0x6c8 DbgWerUserReportActive : Pos 21, 1 Bit
-	// 	+ 0x6c8 ReservedCrossThreadFlags : Pos 22, 10 Bits
-	// 	+ 0x6cc SameThreadPassiveFlags : Uint4B
-	// 	+ 0x6cc ActiveExWorker : Pos 0, 1 Bit
-	// 	+ 0x6cc MemoryMaker : Pos 1, 1 Bit
-	// 	+ 0x6cc StoreLockThread : Pos 2, 2 Bits
-	// 	+ 0x6cc ClonedThread : Pos 4, 1 Bit
-	// 	+ 0x6cc KeyedEventInUse : Pos 5, 1 Bit
-	// 	+ 0x6cc SelfTerminate : Pos 6, 1 Bit
-	// 	+ 0x6cc RespectIoPriority : Pos 7, 1 Bit
-	// 	+ 0x6cc ActivePageLists : Pos 8, 1 Bit
-	// 	+ 0x6cc ReservedSameThreadPassiveFlags : Pos 9, 23 Bits
-	// 	+ 0x6d0 SameThreadApcFlags : Uint4B
-	// 	+ 0x6d0 OwnsProcessAddressSpaceExclusive : Pos 0, 1 Bit
-	// 	+ 0x6d0 OwnsProcessAddressSpaceShared : Pos 1, 1 Bit
-	// 	+ 0x6d0 HardFaultBehavior : Pos 2, 1 Bit
-	// 	+ 0x6d0 StartAddressInvalid : Pos 3, 1 Bit
-	// 	+ 0x6d0 EtwCalloutActive : Pos 4, 1 Bit
-	// 	+ 0x6d0 SuppressSymbolLoad : Pos 5, 1 Bit
-	// 	+ 0x6d0 Prefetching : Pos 6, 1 Bit
-	// 	+ 0x6d0 OwnsVadExclusive : Pos 7, 1 Bit
-	// 	+ 0x6d1 SystemPagePriorityActive : Pos 0, 1 Bit
-	// 	+ 0x6d1 SystemPagePriority : Pos 1, 3 Bits
-	// 	+ 0x6d4 CacheManagerActive : UChar
-	// 	+ 0x6d5 DisablePageFaultClustering : UChar
-	// 	+ 0x6d6 ActiveFaultCount : UChar
-	// 	+ 0x6d7 LockOrderState : UChar
-	// 	+ 0x6d8 AlpcMessageId : Uint8B
-	// 	+ 0x6e0 AlpcMessage : Ptr64 Void
-	// 	+ 0x6e0 AlpcReceiveAttributeSet : Uint4B
-	// 	+ 0x6e8 AlpcWaitListEntry : _LIST_ENTRY
-	// 	+ 0x6f8 ExitStatus : Int4B
-	// 	+ 0x6fc CacheManagerCount : Uint4B
-	// 	+ 0x700 IoBoostCount : Uint4B
-	// 	+ 0x704 IoQoSBoostCount : Uint4B
-	// 	+ 0x708 IoQoSThrottleCount : Uint4B
-	// 	+ 0x710 BoostList : _LIST_ENTRY
-	// 	+ 0x720 DeboostList : _LIST_ENTRY
-	// 	+ 0x730 BoostListLock : Uint8B
-	// 	+ 0x738 IrpListLock : Uint8B
-	// 	+ 0x740 ReservedForSynchTracking : Ptr64 Void
-	// 	+ 0x748 CmCallbackListHead : _SINGLE_LIST_ENTRY
-	// 	+ 0x750 ActivityId : Ptr64 _GUID
-	// 	+ 0x758 SeLearningModeListHead : _SINGLE_LIST_ENTRY
-	// 	+ 0x760 VerifierContext : Ptr64 Void
-	// 	+ 0x768 KernelStackReference : Uint4B
-	// 	+ 0x770 AdjustedClientToken : Ptr64 Void
-	// 	+ 0x778 WorkOnBehalfThread : Ptr64 Void
-	// 	+ 0x780 PropertySet : _PS_PROPERTY_SET
-	// 	+ 0x798 PicoContext : Ptr64 Void
-	// 	+ 0x7a0 UserFsBase : Uint8B
-	// 	+ 0x7a8 UserGsBase : Uint8B
-	// 	+ 0x7b0 EnergyValues : Ptr64 _THREAD_ENERGY_VALUES
-	// 	+ 0x7b8 CmDbgInfo : Ptr64 Void
-	// 	+ 0x7c0 SelectedCpuSets : Uint8B
-	// 	+ 0x7c0 SelectedCpuSetsIndirect : Ptr64 Uint8B
-	// 	+ 0x7c8 Silo : Ptr64 _EJOB
-	// 	+ 0x7d0 ThreadName : Ptr64 _UNICODE_STRING
-	// 	+ 0x7d8 SetContextState : Ptr64 _CONTEXT
-	// 	+ 0x7e0 LastExpectedRunTime : Uint4B
-	// 	+ 0x7e8 OwnerEntryListHead : _LIST_ENTRY
-	// 	+ 0x7f8 DisownedOwnerEntryListLock : Uint8B
-	// 	+ 0x800 DisownedOwnerEntryListHead : _LIST_ENTRY
+	// 	+ 0x698 ChargeOnlySession : Ptr64 Void
+	// 	+ 0x6a0 LegacyPowerObject : Ptr64 Void
+	LIST_ENTRY ThreadListEntry; // 	+ 0x6a8 ThreadListEntry : _LIST_ENTRY
+	// 	+ 0x6b8 RundownProtect : _EX_RUNDOWN_REF
+	// 	+ 0x6c0 ThreadLock : _EX_PUSH_LOCK
+	// 	+ 0x6c8 ReadClusterSize : Uint4B
+	// 	+ 0x6cc MmLockOrdering : Int4B
+	// 	+ 0x6d0 CrossThreadFlags : Uint4B
+	// 	+ 0x6d0 Terminated : Pos 0, 1 Bit
+	// 	+ 0x6d0 ThreadInserted : Pos 1, 1 Bit
+	// 	+ 0x6d0 HideFromDebugger : Pos 2, 1 Bit
+	// 	+ 0x6d0 ActiveImpersonationInfo : Pos 3, 1 Bit
+	// 	+ 0x6d0 HardErrorsAreDisabled : Pos 4, 1 Bit
+	// 	+ 0x6d0 BreakOnTermination : Pos 5, 1 Bit
+	// 	+ 0x6d0 SkipCreationMsg : Pos 6, 1 Bit
+	// 	+ 0x6d0 SkipTerminationMsg : Pos 7, 1 Bit
+	// 	+ 0x6d0 CopyTokenOnOpen : Pos 8, 1 Bit
+	// 	+ 0x6d0 ThreadIoPriority : Pos 9, 3 Bits
+	// 	+ 0x6d0 ThreadPagePriority : Pos 12, 3 Bits
+	// 	+ 0x6d0 RundownFail : Pos 15, 1 Bit
+	// 	+ 0x6d0 UmsForceQueueTermination : Pos 16, 1 Bit
+	// 	+ 0x6d0 IndirectCpuSets : Pos 17, 1 Bit
+	// 	+ 0x6d0 DisableDynamicCodeOptOut : Pos 18, 1 Bit
+	// 	+ 0x6d0 ExplicitCaseSensitivity : Pos 19, 1 Bit
+	// 	+ 0x6d0 PicoNotifyExit : Pos 20, 1 Bit
+	// 	+ 0x6d0 DbgWerUserReportActive : Pos 21, 1 Bit
+	// 	+ 0x6d0 ForcedSelfTrimActive : Pos 22, 1 Bit
+	// 	+ 0x6d0 SamplingCoverage : Pos 23, 1 Bit
+	// 	+ 0x6d0 ReservedCrossThreadFlags : Pos 24, 8 Bits
+	// 	+ 0x6d4 SameThreadPassiveFlags : Uint4B
+	// 	+ 0x6d4 ActiveExWorker : Pos 0, 1 Bit
+	// 	+ 0x6d4 MemoryMaker : Pos 1, 1 Bit
+	// 	+ 0x6d4 StoreLockThread : Pos 2, 2 Bits
+	// 	+ 0x6d4 ClonedThread : Pos 4, 1 Bit
+	// 	+ 0x6d4 KeyedEventInUse : Pos 5, 1 Bit
+	// 	+ 0x6d4 SelfTerminate : Pos 6, 1 Bit
+	// 	+ 0x6d4 RespectIoPriority : Pos 7, 1 Bit
+	// 	+ 0x6d4 ActivePageLists : Pos 8, 1 Bit
+	// 	+ 0x6d4 SecureContext : Pos 9, 1 Bit
+	// 	+ 0x6d4 ZeroPageThread : Pos 10, 1 Bit
+	// 	+ 0x6d4 ReservedSameThreadPassiveFlags : Pos 11, 21 Bits
+	// 	+ 0x6d8 SameThreadApcFlags : Uint4B
+	// 	+ 0x6d8 OwnsProcessAddressSpaceExclusive : Pos 0, 1 Bit
+	// 	+ 0x6d8 OwnsProcessAddressSpaceShared : Pos 1, 1 Bit
+	// 	+ 0x6d8 HardFaultBehavior : Pos 2, 1 Bit
+	// 	+ 0x6d8 StartAddressInvalid : Pos 3, 1 Bit
+	// 	+ 0x6d8 EtwCalloutActive : Pos 4, 1 Bit
+	// 	+ 0x6d8 SuppressSymbolLoad : Pos 5, 1 Bit
+	// 	+ 0x6d8 Prefetching : Pos 6, 1 Bit
+	// 	+ 0x6d8 OwnsVadExclusive : Pos 7, 1 Bit
+	// 	+ 0x6d9 SystemPagePriorityActive : Pos 0, 1 Bit
+	// 	+ 0x6d9 SystemPagePriority : Pos 1, 3 Bits
+	// 	+ 0x6d9 AllowWritesToExecutableMemory : Pos 4, 1 Bit
+	// 	+ 0x6dc CacheManagerActive : UChar
+	// 	+ 0x6dd DisablePageFaultClustering : UChar
+	// 	+ 0x6de ActiveFaultCount : UChar
+	// 	+ 0x6df LockOrderState : UChar
+	// 	+ 0x6e0 AlpcMessageId : Uint8B
+	// 	+ 0x6e8 AlpcMessage : Ptr64 Void
+	// 	+ 0x6e8 AlpcReceiveAttributeSet : Uint4B
+	// 	+ 0x6f0 AlpcWaitListEntry : _LIST_ENTRY
+	// 	+ 0x700 ExitStatus : Int4B
+	// 	+ 0x704 CacheManagerCount : Uint4B
+	// 	+ 0x708 IoBoostCount : Uint4B
+	// 	+ 0x70c IoQoSBoostCount : Uint4B
+	// 	+ 0x710 IoQoSThrottleCount : Uint4B
+	// 	+ 0x718 BoostList : _LIST_ENTRY
+	// 	+ 0x728 DeboostList : _LIST_ENTRY
+	// 	+ 0x738 BoostListLock : Uint8B
+	// 	+ 0x740 IrpListLock : Uint8B
+	// 	+ 0x748 ReservedForSynchTracking : Ptr64 Void
+	// 	+ 0x750 CmCallbackListHead : _SINGLE_LIST_ENTRY
+	// 	+ 0x758 ActivityId : Ptr64 _GUID
+	// 	+ 0x760 SeLearningModeListHead : _SINGLE_LIST_ENTRY
+	// 	+ 0x768 VerifierContext : Ptr64 Void
+	// 	+ 0x770 KernelStackReference : Uint4B
+	// 	+ 0x778 AdjustedClientToken : Ptr64 Void
+	// 	+ 0x780 WorkOnBehalfThread : Ptr64 Void
+	// 	+ 0x788 PropertySet : _PS_PROPERTY_SET
+	// 	+ 0x7a0 PicoContext : Ptr64 Void
+	// 	+ 0x7a8 UserFsBase : Uint8B
+	// 	+ 0x7b0 UserGsBase : Uint8B
+	// 	+ 0x7b8 EnergyValues : Ptr64 _THREAD_ENERGY_VALUES
+	// 	+ 0x7c0 CmDbgInfo : Ptr64 Void
+	// 	+ 0x7c8 SelectedCpuSets : Uint8B
+	// 	+ 0x7c8 SelectedCpuSetsIndirect : Ptr64 Uint8B
+	// 	+ 0x7d0 Silo : Ptr64 _EJOB
+	// 	+ 0x7d8 ThreadName : Ptr64 _UNICODE_STRING
+	// 	+ 0x7e0 SetContextState : Ptr64 _CONTEXT
+	// 	+ 0x7e8 LastExpectedRunTime : Uint4B
+	// 	+ 0x7f0 OwnerEntryListHead : _LIST_ENTRY
+	// 	+ 0x800 DisownedOwnerEntryListLock : Uint8B
+	// 	+ 0x808 DisownedOwnerEntryListHead : _LIST_ENTRY
+
 };
 
-struct _MY_KTHREAD_WIN10_1703_X64_
+struct _MY_KTHREAD_WIN10_1803_X64_
 {
-	UCHAR HeaderAndOthers[0x1c8];// +0x000 Header           : _DISPATCHER_HEADER
+	UCHAR HeaderAndOthers[0x1c8]; // +0x000 Header           : _DISPATCHER_HEADER
 	// 	+ 0x018 SListFaultAddress : Ptr64 Void
 	// 	+ 0x020 QuantumTarget : Uint8B
 	// 	+ 0x028 InitialStack : Ptr64 Void
@@ -382,27 +384,28 @@ struct _MY_KTHREAD_WIN10_1703_X64_
 	// 	+ 0x074 SuspendSchedulerApcWait : Pos 19, 1 Bit
 	// 	+ 0x074 Reserved : Pos 20, 12 Bits
 	// 	+ 0x074 MiscFlags : Int4B
-	// 	+ 0x078 AutoAlignment : Pos 0, 1 Bit
-	// 	+ 0x078 DisableBoost : Pos 1, 1 Bit
-	// 	+ 0x078 BamEppImportant : Pos 2, 1 Bit
-	// 	+ 0x078 AlertedByThreadId : Pos 3, 1 Bit
-	// 	+ 0x078 QuantumDonation : Pos 4, 1 Bit
-	// 	+ 0x078 EnableStackSwap : Pos 5, 1 Bit
-	// 	+ 0x078 GuiThread : Pos 6, 1 Bit
-	// 	+ 0x078 DisableQuantum : Pos 7, 1 Bit
-	// 	+ 0x078 ChargeOnlySchedulingGroup : Pos 8, 1 Bit
-	// 	+ 0x078 DeferPreemption : Pos 9, 1 Bit
-	// 	+ 0x078 QueueDeferPreemption : Pos 10, 1 Bit
-	// 	+ 0x078 ForceDeferSchedule : Pos 11, 1 Bit
-	// 	+ 0x078 SharedReadyQueueAffinity : Pos 12, 1 Bit
-	// 	+ 0x078 FreezeCount : Pos 13, 1 Bit
-	// 	+ 0x078 TerminationApcRequest : Pos 14, 1 Bit
-	// 	+ 0x078 AutoBoostEntriesExhausted : Pos 15, 1 Bit
-	// 	+ 0x078 KernelStackResident : Pos 16, 1 Bit
-	// 	+ 0x078 TerminateRequestReason : Pos 17, 2 Bits
-	// 	+ 0x078 ProcessStackCountDecremented : Pos 19, 1 Bit
-	// 	+ 0x078 RestrictedGuiThread : Pos 20, 1 Bit
-	// 	+ 0x078 ThreadFlagsSpare : Pos 21, 3 Bits
+	// 	+ 0x078 BamQosLevel : Pos 0, 2 Bits
+	// 	+ 0x078 AutoAlignment : Pos 2, 1 Bit
+	// 	+ 0x078 DisableBoost : Pos 3, 1 Bit
+	// 	+ 0x078 AlertedByThreadId : Pos 4, 1 Bit
+	// 	+ 0x078 QuantumDonation : Pos 5, 1 Bit
+	// 	+ 0x078 EnableStackSwap : Pos 6, 1 Bit
+	// 	+ 0x078 GuiThread : Pos 7, 1 Bit
+	// 	+ 0x078 DisableQuantum : Pos 8, 1 Bit
+	// 	+ 0x078 ChargeOnlySchedulingGroup : Pos 9, 1 Bit
+	// 	+ 0x078 DeferPreemption : Pos 10, 1 Bit
+	// 	+ 0x078 QueueDeferPreemption : Pos 11, 1 Bit
+	// 	+ 0x078 ForceDeferSchedule : Pos 12, 1 Bit
+	// 	+ 0x078 SharedReadyQueueAffinity : Pos 13, 1 Bit
+	// 	+ 0x078 FreezeCount : Pos 14, 1 Bit
+	// 	+ 0x078 TerminationApcRequest : Pos 15, 1 Bit
+	// 	+ 0x078 AutoBoostEntriesExhausted : Pos 16, 1 Bit
+	// 	+ 0x078 KernelStackResident : Pos 17, 1 Bit
+	// 	+ 0x078 TerminateRequestReason : Pos 18, 2 Bits
+	// 	+ 0x078 ProcessStackCountDecremented : Pos 20, 1 Bit
+	// 	+ 0x078 RestrictedGuiThread : Pos 21, 1 Bit
+	// 	+ 0x078 VpBackingThread : Pos 22, 1 Bit
+	// 	+ 0x078 ThreadFlagsSpare : Pos 23, 1 Bit
 	// 	+ 0x078 EtwStackTraceApcInserted : Pos 24, 8 Bits
 	// 	+ 0x078 ThreadFlags : Int4B
 	// 	+ 0x07c Tag : UChar
@@ -445,7 +448,7 @@ struct _MY_KTHREAD_WIN10_1703_X64_
 	// 	+ 0x140 WaitBlockFill9 : [88] UChar
 	// 	+ 0x198 XStateSave : Ptr64 _XSTATE_SAVE
 	// 	+ 0x140 WaitBlockFill10 : [136] UChar
-	ULONGLONG Win32Thread;// 	+ 0x1c8 Win32Thread : Ptr64 Void
+	ULONG_PTR Win32Thread; // 	+ 0x1c8 Win32Thread : Ptr64 Void
 	// 	+ 0x140 WaitBlockFill11 : [176] UChar
 	// 	+ 0x1f0 Ucb : Ptr64 _UMS_CONTROL_BLOCK
 	// 	+ 0x1f8 Uch : Ptr64 _KUMS_CONTEXT_HEADER
@@ -499,7 +502,7 @@ struct _MY_KTHREAD_WIN10_1703_X64_
 	// 	+ 0x318 AbEntrySummary : UChar
 	// 	+ 0x319 AbWaitEntryCount : UChar
 	// 	+ 0x31a AbAllocationRegionCount : UChar
-	// 	+ 0x31b Spare20 : UChar
+	// 	+ 0x31b SystemPriority : Char
 	// 	+ 0x31c SecureThreadCookie : Uint4B
 	// 	+ 0x320 LockEntries : [6] _KLOCK_ENTRY
 	// 	+ 0x560 PropagateBoostsEntry : _SINGLE_LIST_ENTRY
@@ -523,5 +526,9 @@ struct _MY_KTHREAD_WIN10_1703_X64_
 	// 	+ 0x5d0 OtherTransferCount : Int8B
 	// 	+ 0x5d8 QueuedScb : Ptr64 _KSCB
 	// 	+ 0x5e0 ThreadTimerDelay : Uint4B
-	// 	+ 0x5e4 Spare22 : Int4B
+	// 	+ 0x5e4 ThreadFlags2 : Int4B
+	// 	+ 0x5e4 PpmPolicy : Pos 0, 2 Bits
+	// 	+ 0x5e4 ThreadFlags2Reserved : Pos 2, 30 Bits
+	// 	+ 0x5e8 SchedulerAssist : Ptr64 Void
+
 };
